@@ -3,6 +3,7 @@
   <ItemGroup>
     <ClCompile Include="rgba2yuv420.cpp" />
     <ClCompile Include="VulkanApp.cpp" />
+    <ClCompile Include="VulkanAppBase.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="vcpkg.json" />
@@ -23,5 +24,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VulkanApp.h" />
+    <ClInclude Include="VulkanAppBase.h" />
   </ItemGroup>
 </Project>

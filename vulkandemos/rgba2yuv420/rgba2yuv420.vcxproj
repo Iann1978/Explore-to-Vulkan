@@ -137,6 +137,7 @@
   <ItemGroup>
     <ClCompile Include="rgba2yuv420.cpp" />
     <ClCompile Include="VulkanApp.cpp" />
+    <ClCompile Include="VulkanAppBase.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shader\rgba2yuv420.comp" />
@@ -148,6 +149,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VulkanApp.h" />
+    <ClInclude Include="VulkanAppBase.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,17 +1,13 @@
 #pragma once
-#include <vulkan/vulkan.h>
-
-#include <vector>
-#include <iostream>
-#include <optional>
-#include <iostream>
-#include <fstream>
 
 
-class VulkanApp
+#include "VulkanAppBase.h"
+
+
+class VulkanApp : public VulkanAppBase
 {
 	VkDebugUtilsMessengerEXT debugMessenger;
-	VkInstance instance{ VK_NULL_HANDLE };
+
 	VkPhysicalDevice physicalDevice{ VK_NULL_HANDLE };
 	VkQueue computeQueue{ VK_NULL_HANDLE };
 	VkDevice device{ VK_NULL_HANDLE };
@@ -47,17 +43,16 @@ public:
 
 private:
 
-	void createInstance();
+	//void createInstance();
 
 
 	void setupDebugMessenger();
 
 
-	void enumSupportedValidationLayer();
 
 
 
-	void enumInstanceExtension();
+
 
 
 	void pickPhysicalDevice();
