@@ -8,7 +8,7 @@ class VulkanApp : public VulkanAppBase
 {
 
 
-	VkPhysicalDevice physicalDevice{ VK_NULL_HANDLE };
+
 	VkQueue computeQueue{ VK_NULL_HANDLE };
 	VkDevice device{ VK_NULL_HANDLE };
 	VkBuffer stagingBuffer{ VK_NULL_HANDLE };
@@ -55,7 +55,7 @@ private:
 
 
 
-	void pickPhysicalDevice();
+
 
 
 	void createLogicDevice();

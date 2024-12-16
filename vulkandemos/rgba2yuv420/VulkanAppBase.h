@@ -21,7 +21,7 @@ public:
 public:
 	VkDebugUtilsMessengerEXT debugMessenger;
 	VkInstance instance{ VK_NULL_HANDLE };
-
+	VkPhysicalDevice physicalDevice{ VK_NULL_HANDLE };
 
 public: // capibilities
 	//std::vector<VkPhysicalDevice> physicalDevices;
@@ -44,6 +44,7 @@ public: // capibilities
 public:
 	void setupDebugMessenger();
 	void createInstance();
+	void pickPhysicalDevice();
 	std::optional<uint32_t> findQueueFamilyIndex(VkPhysicalDevice device, VkQueueFlags queueFlags);
 	std::vector<char> loadShaderCode(const std::string& filename);
 	VkShaderModule createShaderModule(VkDevice device, const std::vector<char>& code);
