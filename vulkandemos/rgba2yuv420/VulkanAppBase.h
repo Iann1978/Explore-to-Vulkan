@@ -19,6 +19,7 @@ public:
 	const bool enableValidationLayers = true;
 #endif
 public:
+	VkDebugUtilsMessengerEXT debugMessenger;
 	VkInstance instance{ VK_NULL_HANDLE };
 
 
@@ -39,6 +40,11 @@ public: // capibilities
 
 
 public:
+	void setupDebugMessenger();
 	void createInstance();
+
+
+	static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData);
+
 };
 

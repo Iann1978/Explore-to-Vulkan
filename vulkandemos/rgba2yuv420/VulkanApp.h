@@ -6,7 +6,7 @@
 
 class VulkanApp : public VulkanAppBase
 {
-	VkDebugUtilsMessengerEXT debugMessenger;
+
 
 	VkPhysicalDevice physicalDevice{ VK_NULL_HANDLE };
 	VkQueue computeQueue{ VK_NULL_HANDLE };
@@ -46,7 +46,7 @@ private:
 	//void createInstance();
 
 
-	void setupDebugMessenger();
+
 
 
 
@@ -127,6 +127,5 @@ private:
 
 	void cleanup();
 
-	static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData);
 
 };

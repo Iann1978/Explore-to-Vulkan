@@ -16,24 +16,6 @@
 
 
 
-
-VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger) {
-	auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
-	if (func != nullptr) {
-		return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
-	}
-	else {
-		return VK_ERROR_EXTENSION_NOT_PRESENT;
-	}
-}
-
-void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator) {
-	auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
-	if (func != nullptr) {
-		func(instance, debugMessenger, pAllocator);
-	}
-}
-
 static std::vector<char> readFile(const std::string& filename) {
 	std::ifstream file(filename, std::ios::ate | std::ios::binary);
 
@@ -70,51 +52,6 @@ void VulkanApp::run()
 	initVulkan();
 	mainLoop();
 	cleanup();
-}
-//
-//void VulkanApp::createInstance()
-//{
-//	std::cout << "createInstance()" << std::endl;
-//	VkApplicationInfo appInfo = {};
-//	appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-//	appInfo.pApplicationName = "rgba2yuv420";
-//	appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
-//	appInfo.pEngineName = "No Engine";
-//	appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
-//	appInfo.apiVersion = VK_API_VERSION_1_0;
-//
-//	std::vector<const char*> extensions;
-//	extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
-//
-//	VkInstanceCreateInfo createInfo = {};
-//	createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-//	createInfo.pApplicationInfo = &appInfo;
-//	createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
-//	createInfo.ppEnabledExtensionNames = extensions.data();
-//	createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
-//	createInfo.ppEnabledLayerNames = validationLayers.data();
-//
-//	VkResult result = vkCreateInstance(&createInfo, nullptr, &instance);
-//	if (result != VK_SUCCESS)
-//	{
-//		throw std::runtime_error("failed to create instance!");
-//	}
-//}
-
-void VulkanApp::setupDebugMessenger() {
-	std::cout << "setupDebugMessenger()" << std::endl;
-	if (!enableValidationLayers) return;
-
-	VkDebugUtilsMessengerCreateInfoEXT createInfo;
-	createInfo = {};
-	createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
-	createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
-	createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
-	createInfo.pfnUserCallback = debugCallback;
-
-	if (CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger) != VK_SUCCESS) {
-		throw std::runtime_error("failed to set up debug messenger!");
-	}
 }
 
 
@@ -1287,8 +1224,3 @@ void VulkanApp::cleanup()
 	std::cout << "cleanup()" << std::endl;
 }
 
-VKAPI_ATTR VkBool32 VKAPI_CALL VulkanApp::debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData) {
-	std::cerr << "validation layer: " << pCallbackData->pMessage << std::endl;
-
-	return VK_FALSE;
-}
