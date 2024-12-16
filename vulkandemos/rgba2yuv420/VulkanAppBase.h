@@ -34,6 +34,8 @@ public: // capibilities
 
 	void enumSupportedValidationLayer();
 	void enumInstanceExtension();
+	void enumSupportedPipeline(VkPhysicalDevice phyDevice);
+	void enumSupportedQueueFamily(VkPhysicalDevice phyDevice);
 
 
 public:

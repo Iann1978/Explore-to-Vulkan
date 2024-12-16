@@ -67,9 +67,7 @@ private:
 	void createYUVImage();
 
 
-	void enumSupportedPipeline(VkPhysicalDevice phyDevice);
 
-	void enumSupportedQueueFamily(VkPhysicalDevice phyDevice);
 
 
 	void createCommandPool();

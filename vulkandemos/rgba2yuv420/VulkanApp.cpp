@@ -336,42 +336,6 @@ void VulkanApp::createYUVImage()
 }
 
 
-void VulkanApp::enumSupportedPipeline(VkPhysicalDevice phyDevice)
-{
-	std::cout << "enumSupportedPipeline()" << std::endl;
-	uint32_t extensionCount = 0;
-	vkEnumerateDeviceExtensionProperties(phyDevice, nullptr, &extensionCount, nullptr);
-	std::vector<VkExtensionProperties> extensions(extensionCount);
-	vkEnumerateDeviceExtensionProperties(phyDevice, nullptr, &extensionCount, extensions.data());
-	// output the supported extensions
-	std::cout << "available extensions:" << std::endl;
-	for (const auto& extension : extensions)
-	{
-		// filter the extension name with 'pipeline'
-		if (std::string(extension.extensionName).find("pipeline") == std::string::npos)
-		{
-			continue;
-		}
-		std::cout << "\t" << extension.extensionName << std::endl;
-	}
-	//VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME
-}
-
-void VulkanApp::enumSupportedQueueFamily(VkPhysicalDevice phyDevice)
-{
-	std::cout << "enumSupportedQueueFamily()" << std::endl;
-	uint32_t queueFamilyCount = 0;
-	vkGetPhysicalDeviceQueueFamilyProperties(phyDevice, &queueFamilyCount, nullptr);
-	std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
-	vkGetPhysicalDeviceQueueFamilyProperties(phyDevice, &queueFamilyCount, queueFamilies.data());
-	// output the supported queue family
-	std::cout << "available queue family:" << std::endl;
-	for (const auto& queueFamily : queueFamilies)
-	{
-		std::cout << "\t" << queueFamily.queueCount << " queues with flags: " << queueFamily.queueFlags << std::endl;
-	}
-}
-
 void VulkanApp::createCommandPool()
 {
 	std::cout << "createCommandPool()" << std::endl;
