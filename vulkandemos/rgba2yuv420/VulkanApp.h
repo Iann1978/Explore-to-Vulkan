@@ -112,7 +112,7 @@ private:
 
 	void recordDownloadYUVImageCommandBuffer();
 
-	std::optional<uint32_t> findQueueFamilyIndex(VkPhysicalDevice device, VkQueueFlags queueFlags);
+	
 
 	VkShaderModule createShaderModule(const std::vector<char>& code);
 

@@ -1025,24 +1025,6 @@ void VulkanApp::recordDownloadYUVImageCommandBuffer()
 	vkEndCommandBuffer(downloadYUVImageCommandBuffer);
 }
 
-std::optional<uint32_t> VulkanApp::findQueueFamilyIndex(VkPhysicalDevice device, VkQueueFlags queueFlags)
-{
-	uint32_t queueFamilyCount = 0;
-	vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);
-
-	std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
-	vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());
-
-	int idx = 0;
-	for (const auto& queueFamily : queueFamilies) {
-		if ((queueFamily.queueFlags & queueFlags) == queueFlags) {
-			return idx;
-		}
-		idx++;
-	}
-
-	return std::nullopt;
-}
 
 
 VkShaderModule VulkanApp::createShaderModule(const std::vector<char>& code) {
