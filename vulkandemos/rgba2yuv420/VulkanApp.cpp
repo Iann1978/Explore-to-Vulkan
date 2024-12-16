@@ -1035,6 +1035,7 @@ void VulkanApp::initVulkan()
 	std::cout << "initVulkan()" << std::endl;
 	enumSupportedValidationLayer();
 	createInstance();
+	enumPhysicalDevices(instance);
 	setupDebugMessenger();
 	enumInstanceExtension();
 	pickPhysicalDevice();

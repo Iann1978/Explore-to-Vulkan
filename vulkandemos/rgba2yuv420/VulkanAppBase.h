@@ -32,9 +32,11 @@ public: // capibilities
 	//std::vector<VkExtensionProperties> extensionProperties;
 	//std::vector<VkLayerProperties> layerProperties;
 	//std::vector<VkSurfaceFormatKHR> surfaceFormats;
-
+	
+	// enumerate the capibilities
 	void enumSupportedValidationLayer();
 	void enumInstanceExtension();
+	void enumPhysicalDevices(VkInstance instance);
 	void enumSupportedPipeline(VkPhysicalDevice phyDevice);
 	void enumSupportedQueueFamily(VkPhysicalDevice phyDevice);
 

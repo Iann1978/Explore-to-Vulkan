@@ -49,6 +49,25 @@ void VulkanAppBase::enumInstanceExtension()
 	}
 }
 
+void VulkanAppBase::enumPhysicalDevices(VkInstance instance)
+{
+	std::cout << "enumPhysicalDevices()" << std::endl;
+	uint32_t deviceCount = 0;
+	vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
+	std::vector<VkPhysicalDevice> devices(deviceCount);
+	vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data());
+	// output the supported physical devices
+	std::cout << "available physical devices: " << deviceCount << std::endl;
+	for (const auto& device : devices)
+	{
+		VkPhysicalDeviceProperties deviceProperties;
+		vkGetPhysicalDeviceProperties(device, &deviceProperties);
+		std::cout << "\t" << deviceProperties.deviceName << std::endl;
+	}
+}
+
+
+
 
 
 void VulkanAppBase::enumSupportedPipeline(VkPhysicalDevice phyDevice)
