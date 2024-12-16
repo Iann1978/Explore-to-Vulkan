@@ -46,6 +46,7 @@ public:
 	void createInstance();
 	void pickPhysicalDevice();
 	std::optional<uint32_t> findQueueFamilyIndex(VkPhysicalDevice device, VkQueueFlags queueFlags);
+	std::optional<uint32_t> findMemoryTypeIndex(VkPhysicalDevice phyDevice, uint32_t typeFilter, VkMemoryPropertyFlags properties);
 	std::vector<char> loadShaderCode(const std::string& filename);
 	VkShaderModule createShaderModule(VkDevice device, const std::vector<char>& code);
 

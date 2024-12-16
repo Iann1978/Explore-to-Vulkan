@@ -186,6 +186,23 @@ std::optional<uint32_t> VulkanAppBase::findQueueFamilyIndex(VkPhysicalDevice dev
 	return std::nullopt;
 }
 
+std::optional<uint32_t> VulkanAppBase::findMemoryTypeIndex(VkPhysicalDevice phyDevice, uint32_t typeFilter, VkMemoryPropertyFlags properties)
+{
+	VkPhysicalDeviceMemoryProperties memoryProperties;
+	vkGetPhysicalDeviceMemoryProperties(phyDevice, &memoryProperties);
+	//uint32_t memoryTypeIndex = UINT32_MAX;
+	for (uint32_t i = 0; i < memoryProperties.memoryTypeCount; i++)
+	{
+		if ((typeFilter & (1 << i)) && (properties & VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT))
+		{
+			return i;
+			//memoryTypeIndex = i;
+			break;
+		}
+	}
+	return std::nullopt;
+
+}
 
 
 std::vector<char> VulkanAppBase::loadShaderCode(const std::string& filename) {

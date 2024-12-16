@@ -70,6 +70,8 @@ void VulkanApp::createLogicDevice()
 
 }
 
+
+
 void VulkanApp::createRGBAImage()
 {
 	std::cout << "createRGBAImage()" << std::endl;
@@ -104,23 +106,14 @@ void VulkanApp::createRGBAImage()
 	vkGetImageMemoryRequirements(device, rgbaImage, &memRequirements);
 
 	// find memory type index
-	VkPhysicalDeviceMemoryProperties memoryProperties;
-	vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memoryProperties);
-	uint32_t memoryTypeIndex = UINT32_MAX;
-	for (uint32_t i = 0; i < memoryProperties.memoryTypeCount; i++)
-	{
-		if ((memRequirements.memoryTypeBits & (1 << i)) && (memoryProperties.memoryTypes[i].propertyFlags & VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT))
-		{
-			memoryTypeIndex = i;
-			break;
-		}
-	}
+	auto memoryTypeIndex = findMemoryTypeIndex(physicalDevice, memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
+
 
 
 	VkMemoryAllocateInfo allocInfo = {};
 	allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 	allocInfo.allocationSize = memRequirements.size;
-	allocInfo.memoryTypeIndex = memoryTypeIndex;
+	allocInfo.memoryTypeIndex = memoryTypeIndex.value();
 
 	result = vkAllocateMemory(device, &allocInfo, nullptr, &rgbaImageMemory);
 	if (result != VK_SUCCESS)
@@ -189,22 +182,24 @@ void VulkanApp::createYUVImage()
 	vkGetImageMemoryRequirements(device, yuvImage, &memRequirements);
 
 	// find memory type index
-	VkPhysicalDeviceMemoryProperties memoryProperties;
-	vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memoryProperties);
-	uint32_t memoryTypeIndex = UINT32_MAX;
-	for (uint32_t i = 0; i < memoryProperties.memoryTypeCount; i++)
-	{
-		if ((memRequirements.memoryTypeBits & (1 << i)) && (memoryProperties.memoryTypes[i].propertyFlags & VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT))
-		{
-			memoryTypeIndex = i;
-			break;
-		}
-	}
+	auto memoryTypeIndex = findMemoryTypeIndex(physicalDevice, memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
+
+	//VkPhysicalDeviceMemoryProperties memoryProperties;
+	//vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memoryProperties);
+	//uint32_t memoryTypeIndex = UINT32_MAX;
+	//for (uint32_t i = 0; i < memoryProperties.memoryTypeCount; i++)
+	//{
+	//	if ((memRequirements.memoryTypeBits & (1 << i)) && (memoryProperties.memoryTypes[i].propertyFlags & VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT))
+	//	{
+	//		memoryTypeIndex = i;
+	//		break;
+	//	}
+	//}
 
 	VkMemoryAllocateInfo allocInfo = {};
 	allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 	allocInfo.allocationSize = memRequirements.size;
-	allocInfo.memoryTypeIndex = memoryTypeIndex;
+	allocInfo.memoryTypeIndex = memoryTypeIndex.value();
 
 	result = vkAllocateMemory(device, &allocInfo, nullptr, &yuvImageMemory);
 	if (result != VK_SUCCESS)
