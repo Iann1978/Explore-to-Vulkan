@@ -114,7 +114,7 @@ private:
 
 	
 
-	VkShaderModule createShaderModule(const std::vector<char>& code);
+
 
 	void createRgba2YuvPipiline();
 

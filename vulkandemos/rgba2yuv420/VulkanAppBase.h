@@ -43,6 +43,8 @@ public:
 	void setupDebugMessenger();
 	void createInstance();
 	std::optional<uint32_t> findQueueFamilyIndex(VkPhysicalDevice device, VkQueueFlags queueFlags);
+	std::vector<char> loadShaderCode(const std::string& filename);
+	VkShaderModule createShaderModule(VkDevice device, const std::vector<char>& code);
 
 
 	static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData);
