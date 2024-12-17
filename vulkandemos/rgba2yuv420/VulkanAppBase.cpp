@@ -151,6 +151,30 @@ void VulkanAppBase::pickPhysicalDevice()
 	physicalDevice = devices[0];
 }
 
+
+void VulkanAppBase::createLogicDevice()
+{
+	std::cout << "createLogicDevice()" << std::endl;
+
+	VkDeviceQueueCreateInfo queueCreateInfo = {};
+	queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+	queueCreateInfo.queueFamilyIndex = 0;
+	queueCreateInfo.queueCount = 1;
+	float queuePriority = 1.0f;
+	queueCreateInfo.pQueuePriorities = &queuePriority;
+
+	VkDeviceCreateInfo createInfo = {};
+	createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+	createInfo.queueCreateInfoCount = 1;
+	createInfo.pQueueCreateInfos = &queueCreateInfo;
+
+	VkResult result = vkCreateDevice(physicalDevice, &createInfo, nullptr, &device);
+	if (result != VK_SUCCESS)
+	{
+		throw std::runtime_error("failed to create logic device!");
+	}
+}
+
 void VulkanAppBase::setupDebugMessenger() {
 	std::cout << "setupDebugMessenger()" << std::endl;
 	if (!enableValidationLayers) return;

@@ -10,7 +10,7 @@ class VulkanApp : public VulkanAppBase
 
 
 	VkQueue computeQueue{ VK_NULL_HANDLE };
-	VkDevice device{ VK_NULL_HANDLE };
+
 	VkBuffer stagingBuffer{ VK_NULL_HANDLE };
 	VkDeviceMemory stagingBufferMemory{ VK_NULL_HANDLE };
 	VkImage rgbaImage{ VK_NULL_HANDLE };
@@ -58,7 +58,7 @@ private:
 
 
 
-	void createLogicDevice();
+
 
 	void pickComputeQueue();
 
