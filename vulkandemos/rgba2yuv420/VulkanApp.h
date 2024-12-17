@@ -60,6 +60,7 @@ private:
 
 	void createLogicDevice();
 
+	void pickComputeQueue();
 
 	void createRGBAImage();
 

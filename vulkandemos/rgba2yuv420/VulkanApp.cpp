@@ -61,16 +61,19 @@ void VulkanApp::createLogicDevice()
 		throw std::runtime_error("failed to create logic device!");
 	}
 
+
+
+}
+
+void VulkanApp::pickComputeQueue()
+{
 	auto queryIndex = findQueueFamilyIndex(physicalDevice, VK_QUEUE_COMPUTE_BIT);
 	if (!queryIndex.has_value()) {
 		throw std::runtime_error("failed to find compute queue!");
 	}
 
 	vkGetDeviceQueue(device, queryIndex.value(), 0, &computeQueue);
-
 }
-
-
 
 void VulkanApp::createRGBAImage()
 {
@@ -1023,6 +1026,7 @@ void VulkanApp::initVulkan()
 	enumSupportedPipeline(physicalDevice);
 	enumSupportedQueueFamily(physicalDevice);
 	createLogicDevice();
+	pickComputeQueue();
 	createStagingBuffer();
 	createRGBAImage();
 	createYUVImage();
