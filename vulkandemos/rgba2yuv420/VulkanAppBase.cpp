@@ -201,6 +201,36 @@ void VulkanAppBase::pickComputeQueue()
 }
 
 
+VkImage VulkanAppBase::createImage()
+{
+	std::cout << "  createImage()" << std::endl;
+	VkResult result = VK_SUCCESS;
+	VkImage image;
+
+	VkImageCreateInfo imageInfo = {};
+	imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+	imageInfo.imageType = VK_IMAGE_TYPE_2D; // 2D image  
+	imageInfo.extent.width = 512;           // Width of the image  
+	imageInfo.extent.height = 512;          // Height of the image  
+	imageInfo.extent.depth = 1;             // Depth of the image (1 for 2D)  
+	imageInfo.mipLevels = 1;                 // Number of mipmap levels  
+	imageInfo.arrayLayers = 1;               // Number of array layers  
+	imageInfo.format = VK_FORMAT_R8G8B8A8_UNORM; // RGB format  
+	imageInfo.tiling = VK_IMAGE_TILING_LINEAR; // Optimal tiling for performance  
+	imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED; // Initial layout  
+	imageInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_STORAGE_BIT; // Usage flags  
+	imageInfo.samples = VK_SAMPLE_COUNT_1_BIT; // Number of samples per pixel  
+	imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE; // Sharing mode  
+
+	result = vkCreateImage(device, &imageInfo, nullptr, &image);
+	if (result != VK_SUCCESS)
+	{
+		throw std::runtime_error("failed to create rgba image!");
+	}
+
+	return image;
+}
+
 void VulkanAppBase::setupDebugMessenger() {
 	std::cout << "setupDebugMessenger()" << std::endl;
 	if (!enableValidationLayers) return;

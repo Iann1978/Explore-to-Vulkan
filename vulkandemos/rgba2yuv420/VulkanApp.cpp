@@ -11,12 +11,6 @@
 #include <stb_image.h>
 
 
-
-
-
-
-
-
 VulkanApp::VulkanApp()
 {
 	std::cout << "VulkanApp()" << std::endl;
@@ -36,38 +30,34 @@ void VulkanApp::run()
 }
 
 
-
-
-
-
-
-
 void VulkanApp::createRGBAImage()
 {
 	std::cout << "createRGBAImage()" << std::endl;
 	VkResult result = VK_SUCCESS;
 
 
-	VkImageCreateInfo imageInfo = {};
-	imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-	imageInfo.imageType = VK_IMAGE_TYPE_2D; // 2D image  
-	imageInfo.extent.width = 512;           // Width of the image  
-	imageInfo.extent.height = 512;          // Height of the image  
-	imageInfo.extent.depth = 1;             // Depth of the image (1 for 2D)  
-	imageInfo.mipLevels = 1;                 // Number of mipmap levels  
-	imageInfo.arrayLayers = 1;               // Number of array layers  
-	imageInfo.format = VK_FORMAT_R8G8B8A8_UNORM; // RGB format  
-	imageInfo.tiling = VK_IMAGE_TILING_LINEAR; // Optimal tiling for performance  
-	imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED; // Initial layout  
-	imageInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_STORAGE_BIT; // Usage flags  
-	imageInfo.samples = VK_SAMPLE_COUNT_1_BIT; // Number of samples per pixel  
-	imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE; // Sharing mode  
+	//VkImageCreateInfo imageInfo = {};
+	//imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+	//imageInfo.imageType = VK_IMAGE_TYPE_2D; // 2D image  
+	//imageInfo.extent.width = 512;           // Width of the image  
+	//imageInfo.extent.height = 512;          // Height of the image  
+	//imageInfo.extent.depth = 1;             // Depth of the image (1 for 2D)  
+	//imageInfo.mipLevels = 1;                 // Number of mipmap levels  
+	//imageInfo.arrayLayers = 1;               // Number of array layers  
+	//imageInfo.format = VK_FORMAT_R8G8B8A8_UNORM; // RGB format  
+	//imageInfo.tiling = VK_IMAGE_TILING_LINEAR; // Optimal tiling for performance  
+	//imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED; // Initial layout  
+	//imageInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_STORAGE_BIT; // Usage flags  
+	//imageInfo.samples = VK_SAMPLE_COUNT_1_BIT; // Number of samples per pixel  
+	//imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE; // Sharing mode  
 
-	result = vkCreateImage(device, &imageInfo, nullptr, &rgbaImage);
-	if (result != VK_SUCCESS)
-	{
-		throw std::runtime_error("failed to create rgba image!");
-	}
+	//result = vkCreateImage(device, &imageInfo, nullptr, &rgbaImage);
+	//if (result != VK_SUCCESS)
+	//{
+	//	throw std::runtime_error("failed to create rgba image!");
+	//}
+
+	rgbaImage = createImage();
 
 
 
@@ -123,26 +113,29 @@ void VulkanApp::createRGBAImage()
 void VulkanApp::createYUVImage()
 {
 	std::cout << "createYUVImage()" << std::endl;
-	VkImageCreateInfo imageInfo = {};
-	imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-	imageInfo.imageType = VK_IMAGE_TYPE_2D;
-	imageInfo.extent.width = 512;
-	imageInfo.extent.height = 512;
-	imageInfo.extent.depth = 1;
-	imageInfo.mipLevels = 1;
-	imageInfo.arrayLayers = 1;
-	imageInfo.format = VK_FORMAT_R8G8B8A8_UNORM;
-	imageInfo.tiling = VK_IMAGE_TILING_LINEAR;
-	imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-	imageInfo.usage = VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_STORAGE_BIT;
-	imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
-	imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+	VkResult result = VK_SUCCESS;
+	//VkImageCreateInfo imageInfo = {};
+	//imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+	//imageInfo.imageType = VK_IMAGE_TYPE_2D;
+	//imageInfo.extent.width = 512;
+	//imageInfo.extent.height = 512;
+	//imageInfo.extent.depth = 1;
+	//imageInfo.mipLevels = 1;
+	//imageInfo.arrayLayers = 1;
+	//imageInfo.format = VK_FORMAT_R8G8B8A8_UNORM;
+	//imageInfo.tiling = VK_IMAGE_TILING_LINEAR;
+	//imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+	//imageInfo.usage = VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_STORAGE_BIT;
+	//imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+	//imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-	VkResult result = vkCreateImage(device, &imageInfo, nullptr, &yuvImage);
-	if (result != VK_SUCCESS)
-	{
-		throw std::runtime_error("failed to create yuv image!");
-	}
+	//VkResult result = vkCreateImage(device, &imageInfo, nullptr, &yuvImage);
+	//if (result != VK_SUCCESS)
+	//{
+	//	throw std::runtime_error("failed to create yuv image!");
+	//}
+
+	yuvImage = createImage();
 
 	// Allocate memory
 	VkMemoryRequirements memRequirements;
