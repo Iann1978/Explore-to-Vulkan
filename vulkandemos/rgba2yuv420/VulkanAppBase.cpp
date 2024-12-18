@@ -190,6 +190,17 @@ void VulkanAppBase::createCommandPool()
 	}
 }
 
+void VulkanAppBase::pickComputeQueue()
+{
+	auto queryIndex = findQueueFamilyIndex(physicalDevice, VK_QUEUE_COMPUTE_BIT);
+	if (!queryIndex.has_value()) {
+		throw std::runtime_error("failed to find compute queue!");
+	}
+
+	vkGetDeviceQueue(device, queryIndex.value(), 0, &computeQueue);
+}
+
+
 void VulkanAppBase::setupDebugMessenger() {
 	std::cout << "setupDebugMessenger()" << std::endl;
 	if (!enableValidationLayers) return;

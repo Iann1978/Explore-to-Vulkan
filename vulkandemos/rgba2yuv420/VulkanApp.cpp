@@ -40,15 +40,7 @@ void VulkanApp::run()
 
 
 
-void VulkanApp::pickComputeQueue()
-{
-	auto queryIndex = findQueueFamilyIndex(physicalDevice, VK_QUEUE_COMPUTE_BIT);
-	if (!queryIndex.has_value()) {
-		throw std::runtime_error("failed to find compute queue!");
-	}
 
-	vkGetDeviceQueue(device, queryIndex.value(), 0, &computeQueue);
-}
 
 void VulkanApp::createRGBAImage()
 {
@@ -121,9 +113,6 @@ void VulkanApp::createRGBAImage()
 	if (vkCreateImageView(device, &viewInfo, nullptr, &rgbaImageView) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create rgba image views!");
 	}
-
-
-
 
 
 

@@ -9,7 +9,7 @@ class VulkanApp : public VulkanAppBase
 
 
 
-	VkQueue computeQueue{ VK_NULL_HANDLE };
+
 
 	VkBuffer stagingBuffer{ VK_NULL_HANDLE };
 	VkDeviceMemory stagingBufferMemory{ VK_NULL_HANDLE };
@@ -43,24 +43,6 @@ public:
 
 private:
 
-	//void createInstance();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	void pickComputeQueue();
 
 	void createRGBAImage();
 
