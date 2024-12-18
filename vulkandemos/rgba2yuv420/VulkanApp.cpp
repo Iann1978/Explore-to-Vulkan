@@ -213,20 +213,7 @@ void VulkanApp::createYUVImage()
 }
 
 
-void VulkanApp::createCommandPool()
-{
-	std::cout << "createCommandPool()" << std::endl;
-	VkCommandPoolCreateInfo poolInfo = {};
-	poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-	poolInfo.queueFamilyIndex = 0;
-	poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 
-	VkResult result = vkCreateCommandPool(device, &poolInfo, nullptr, &commandPool);
-	if (result != VK_SUCCESS)
-	{
-		throw std::runtime_error("failed to create command pool!");
-	}
-}
 
 
 VkPipeline VulkanApp::createComputePipeline1(VkDevice device, VkShaderModule shaderModule, VkPipelineLayout pipelineLayout) {

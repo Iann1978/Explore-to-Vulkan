@@ -23,6 +23,7 @@ public:
 	VkInstance instance{ VK_NULL_HANDLE };
 	VkPhysicalDevice physicalDevice{ VK_NULL_HANDLE };
 	VkDevice device{ VK_NULL_HANDLE };
+	VkCommandPool commandPool{ VK_NULL_HANDLE };
 
 public: // capibilities
 	//std::vector<VkPhysicalDevice> physicalDevices;
@@ -47,6 +48,7 @@ public:
 	void createInstance();
 	void pickPhysicalDevice();
 	void createLogicDevice();
+	void createCommandPool();
 	std::optional<uint32_t> findQueueFamilyIndex(VkPhysicalDevice device, VkQueueFlags queueFlags);
 	std::optional<uint32_t> findMemoryTypeIndex(VkPhysicalDevice phyDevice, uint32_t typeFilter, VkMemoryPropertyFlags properties);
 	std::vector<char> loadShaderCode(const std::string& filename);

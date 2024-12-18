@@ -175,6 +175,21 @@ void VulkanAppBase::createLogicDevice()
 	}
 }
 
+void VulkanAppBase::createCommandPool()
+{
+	std::cout << "createCommandPool()" << std::endl;
+	VkCommandPoolCreateInfo poolInfo = {};
+	poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+	poolInfo.queueFamilyIndex = 0;
+	poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+
+	VkResult result = vkCreateCommandPool(device, &poolInfo, nullptr, &commandPool);
+	if (result != VK_SUCCESS)
+	{
+		throw std::runtime_error("failed to create command pool!");
+	}
+}
+
 void VulkanAppBase::setupDebugMessenger() {
 	std::cout << "setupDebugMessenger()" << std::endl;
 	if (!enableValidationLayers) return;

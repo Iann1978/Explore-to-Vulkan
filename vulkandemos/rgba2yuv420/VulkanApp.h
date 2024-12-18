@@ -19,7 +19,7 @@ class VulkanApp : public VulkanAppBase
 	VkImage yuvImage{ VK_NULL_HANDLE };
 	VkDeviceMemory yuvImageMemory{ VK_NULL_HANDLE };
 	VkImageView yuvImageView{ VK_NULL_HANDLE };
-	VkCommandPool commandPool{ VK_NULL_HANDLE };
+
 	VkCommandBuffer uploadRGBAImageCommandBuffer{ VK_NULL_HANDLE };
 	VkCommandBuffer copyFromRGBAImageToYUVImageCommandBuffer{ VK_NULL_HANDLE };
 	VkCommandBuffer downloadYUVImageCommandBuffer{ VK_NULL_HANDLE };
@@ -71,7 +71,7 @@ private:
 
 
 
-	void createCommandPool();
+
 
 
 	VkPipeline createComputePipeline1(VkDevice device, VkShaderModule shaderModule, VkPipelineLayout pipelineLayout);
