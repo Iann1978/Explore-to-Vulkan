@@ -82,6 +82,7 @@ private:
 
 	void createComputeCommandBuffer();
 
+
 	void recordCommandBuffer(VkCommandBuffer commandBuffer);
 
 	void createStagingBuffer();

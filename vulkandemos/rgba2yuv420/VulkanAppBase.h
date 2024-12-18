@@ -52,6 +52,7 @@ public:
 	void createCommandPool();
 	void pickComputeQueue();
 	VkImage createImage();
+	void recordCommandBuffer_TransitionImageLayout(VkCommandBuffer commandBuffer, VkImage image, VkImageLayout newLayout);
 	std::optional<uint32_t> findQueueFamilyIndex(VkPhysicalDevice device, VkQueueFlags queueFlags);
 	std::optional<uint32_t> findMemoryTypeIndex(VkPhysicalDevice phyDevice, uint32_t typeFilter, VkMemoryPropertyFlags properties);
 	std::vector<char> loadShaderCode(const std::string& filename);

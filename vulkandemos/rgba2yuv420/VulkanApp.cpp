@@ -35,31 +35,8 @@ void VulkanApp::createRGBAImage()
 	std::cout << "createRGBAImage()" << std::endl;
 	VkResult result = VK_SUCCESS;
 
-
-	//VkImageCreateInfo imageInfo = {};
-	//imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-	//imageInfo.imageType = VK_IMAGE_TYPE_2D; // 2D image  
-	//imageInfo.extent.width = 512;           // Width of the image  
-	//imageInfo.extent.height = 512;          // Height of the image  
-	//imageInfo.extent.depth = 1;             // Depth of the image (1 for 2D)  
-	//imageInfo.mipLevels = 1;                 // Number of mipmap levels  
-	//imageInfo.arrayLayers = 1;               // Number of array layers  
-	//imageInfo.format = VK_FORMAT_R8G8B8A8_UNORM; // RGB format  
-	//imageInfo.tiling = VK_IMAGE_TILING_LINEAR; // Optimal tiling for performance  
-	//imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED; // Initial layout  
-	//imageInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_STORAGE_BIT; // Usage flags  
-	//imageInfo.samples = VK_SAMPLE_COUNT_1_BIT; // Number of samples per pixel  
-	//imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE; // Sharing mode  
-
-	//result = vkCreateImage(device, &imageInfo, nullptr, &rgbaImage);
-	//if (result != VK_SUCCESS)
-	//{
-	//	throw std::runtime_error("failed to create rgba image!");
-	//}
-
+	// Create rgba image
 	rgbaImage = createImage();
-
-
 
 	// Allocate memory
 	VkMemoryRequirements memRequirements;
@@ -114,27 +91,8 @@ void VulkanApp::createYUVImage()
 {
 	std::cout << "createYUVImage()" << std::endl;
 	VkResult result = VK_SUCCESS;
-	//VkImageCreateInfo imageInfo = {};
-	//imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-	//imageInfo.imageType = VK_IMAGE_TYPE_2D;
-	//imageInfo.extent.width = 512;
-	//imageInfo.extent.height = 512;
-	//imageInfo.extent.depth = 1;
-	//imageInfo.mipLevels = 1;
-	//imageInfo.arrayLayers = 1;
-	//imageInfo.format = VK_FORMAT_R8G8B8A8_UNORM;
-	//imageInfo.tiling = VK_IMAGE_TILING_LINEAR;
-	//imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-	//imageInfo.usage = VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_STORAGE_BIT;
-	//imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
-	//imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-	//VkResult result = vkCreateImage(device, &imageInfo, nullptr, &yuvImage);
-	//if (result != VK_SUCCESS)
-	//{
-	//	throw std::runtime_error("failed to create yuv image!");
-	//}
-
+	// Create yuv image
 	yuvImage = createImage();
 
 	// Allocate memory
@@ -143,18 +101,6 @@ void VulkanApp::createYUVImage()
 
 	// find memory type index
 	auto memoryTypeIndex = findMemoryTypeIndex(physicalDevice, memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
-
-	//VkPhysicalDeviceMemoryProperties memoryProperties;
-	//vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memoryProperties);
-	//uint32_t memoryTypeIndex = UINT32_MAX;
-	//for (uint32_t i = 0; i < memoryProperties.memoryTypeCount; i++)
-	//{
-	//	if ((memRequirements.memoryTypeBits & (1 << i)) && (memoryProperties.memoryTypes[i].propertyFlags & VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT))
-	//	{
-	//		memoryTypeIndex = i;
-	//		break;
-	//	}
-	//}
 
 	VkMemoryAllocateInfo allocInfo = {};
 	allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
@@ -188,14 +134,7 @@ void VulkanApp::createYUVImage()
 	if (vkCreateImageView(device, &viewInfo, nullptr, &yuvImageView) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create yuv image views!");
 	}
-
-
-
-
 }
-
-
-
 
 
 VkPipeline VulkanApp::createComputePipeline1(VkDevice device, VkShaderModule shaderModule, VkPipelineLayout pipelineLayout) {
@@ -217,6 +156,7 @@ VkPipeline VulkanApp::createComputePipeline1(VkDevice device, VkShaderModule sha
 
 	return pipeline;
 }
+
 VkDescriptorSetLayout VulkanApp::createDescriptorSetLayout(VkDevice device)
 {
 	std::cout << "createDescriptorSetLayout()" << std::endl;
@@ -557,7 +497,6 @@ void VulkanApp::createComputeCommandBuffer()
 	}
 }
 
-
 void VulkanApp::recordCommandBuffer(VkCommandBuffer commandBuffer) {
 	VkCommandBufferBeginInfo beginInfo = {};
 	beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -567,55 +506,12 @@ void VulkanApp::recordCommandBuffer(VkCommandBuffer commandBuffer) {
 	}
 
 
-	// Transition rgba image layout
-	VkImageMemoryBarrier rgbaImageBarrier = {};
-	rgbaImageBarrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-	rgbaImageBarrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
-	rgbaImageBarrier.newLayout = VK_IMAGE_LAYOUT_GENERAL;
-	rgbaImageBarrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-	rgbaImageBarrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
-	rgbaImageBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-	rgbaImageBarrier.image = rgbaImage;
-	rgbaImageBarrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-	rgbaImageBarrier.subresourceRange.baseMipLevel = 0;
-	rgbaImageBarrier.subresourceRange.levelCount = 1;
-	rgbaImageBarrier.subresourceRange.baseArrayLayer = 0;
-	rgbaImageBarrier.subresourceRange.layerCount = 1;
-
-	vkCmdPipelineBarrier(
-		commandBuffer,
-		VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
-		0,
-		0, nullptr,
-		0, nullptr,
-		1, &rgbaImageBarrier
-	);
+	//// Transition rgba image layout
+	recordCommandBuffer_TransitionImageLayout(commandBuffer, rgbaImage, VK_IMAGE_LAYOUT_GENERAL);
 
 
 	// Transition yuv image layout
-	VkImageMemoryBarrier yuvImageBarrier = {};
-	yuvImageBarrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-	yuvImageBarrier.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-	yuvImageBarrier.newLayout = VK_IMAGE_LAYOUT_GENERAL;
-	yuvImageBarrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-	yuvImageBarrier.dstAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
-	yuvImageBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-	yuvImageBarrier.image = yuvImage;
-	yuvImageBarrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-	yuvImageBarrier.subresourceRange.baseMipLevel = 0;
-	yuvImageBarrier.subresourceRange.levelCount = 1;
-	yuvImageBarrier.subresourceRange.baseArrayLayer = 0;
-	yuvImageBarrier.subresourceRange.layerCount = 1;
-
-	vkCmdPipelineBarrier(
-		commandBuffer,
-		VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
-		0,
-		0, nullptr,
-		0, nullptr,
-		1, &yuvImageBarrier
-	);
-
+	recordCommandBuffer_TransitionImageLayout(commandBuffer, yuvImage, VK_IMAGE_LAYOUT_GENERAL);
 
 	// Bind the compute pipeline  
 	vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, computePipeline);
@@ -759,26 +655,7 @@ void VulkanApp::recordUploadRGBAImageCommandBuffer()
 	}
 
 	// Transition rgba image layout
-	VkImageMemoryBarrier barrier = {};
-	barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-	barrier.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-	barrier.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
-	barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-	barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-	barrier.image = rgbaImage;
-	barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-	barrier.subresourceRange.baseMipLevel = 0;
-	barrier.subresourceRange.levelCount = 1;
-	barrier.subresourceRange.baseArrayLayer = 0;
-	barrier.subresourceRange.layerCount = 1;
-	barrier.srcAccessMask = 0;
-	barrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-
-	vkCmdPipelineBarrier(
-		uploadRGBAImageCommandBuffer,
-		VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT,
-		0, 0, nullptr, 0, nullptr, 1, &barrier
-	);
+	recordCommandBuffer_TransitionImageLayout(uploadRGBAImageCommandBuffer, rgbaImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 
 	// Copy data from staging buffer to rgba image
 	VkBufferImageCopy region = {};
@@ -894,28 +771,7 @@ void VulkanApp::recordDownloadYUVImageCommandBuffer()
 	}
 
 	// Transition yuv image layout
-	VkImageMemoryBarrier yuvImageBarrier = {};
-	yuvImageBarrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-	yuvImageBarrier.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-	yuvImageBarrier.newLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
-	yuvImageBarrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-	yuvImageBarrier.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
-	yuvImageBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-	yuvImageBarrier.image = yuvImage;
-	yuvImageBarrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-	yuvImageBarrier.subresourceRange.baseMipLevel = 0;
-	yuvImageBarrier.subresourceRange.levelCount = 1;
-	yuvImageBarrier.subresourceRange.baseArrayLayer = 0;
-	yuvImageBarrier.subresourceRange.layerCount = 1;
-
-	vkCmdPipelineBarrier(
-		downloadYUVImageCommandBuffer,
-		VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT,
-		0,
-		0, nullptr,
-		0, nullptr,
-		1, &yuvImageBarrier
-	);
+	recordCommandBuffer_TransitionImageLayout(downloadYUVImageCommandBuffer, yuvImage, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
 
 	// Copy data from yuv image to staging buffer
 	VkBufferImageCopy region = {};
