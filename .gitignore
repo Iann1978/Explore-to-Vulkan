@@ -34,3 +34,4 @@ vulkandemos/.vs
 vulkandemos/rgba2yuv420/vcpkg_installed
 vulkandemos/rgba2yuv420/x64
 vulkandemos/x64
+vulkandemos/encoder/x64
