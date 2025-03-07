@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{e6cede31-a790-4841-9e68-f89dd4932406}</ProjectGuid>
-    <RootNamespace>rgba2yuv420</RootNamespace>
+    <ProjectGuid>{10335362-c459-4283-8f4c-ed3341003a44}</ProjectGuid>
+    <RootNamespace>triangle</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -73,9 +73,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>D:\dev\VulkanSDK\1.4.304.1\Include;$(IncludePath)</IncludePath>
     <LibraryPath>D:\dev\VulkanSDK\1.4.304.1\Lib;$(LibraryPath)</LibraryPath>
-  </PropertyGroup>
-  <PropertyGroup Label="Vcpkg">
-    <VcpkgEnableManifest>true</VcpkgEnableManifest>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -135,21 +132,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="rgba2yuv420.cpp" />
+    <ClCompile Include="RenderTarget.cpp" />
+    <ClCompile Include="triangle.cpp" />
     <ClCompile Include="VulkanApp.cpp" />
-    <ClCompile Include="VulkanAppBase.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="shader\rgba2yuv420.comp" />
-    <None Include="shader\rgba2yuv420.comp.spv" />
-    <None Include="vcpkg.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="texture.jpg" />
-  </ItemGroup>
-  <ItemGroup>
+    <ClInclude Include="include.h" />
+    <ClInclude Include="RenderTarget.h" />
     <ClInclude Include="VulkanApp.h" />
-    <ClInclude Include="VulkanAppBase.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="triangle.frag" />
+    <None Include="triangle.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
