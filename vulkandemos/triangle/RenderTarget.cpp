@@ -3,6 +3,8 @@
 
 VkSurfaceKHR RenderTarget::createSurface()
 {
+	StackLog _(logStack, __FUNCTION__);
+
 	VkWin32SurfaceCreateInfoKHR createInfo = {};
 	createInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
 	createInfo.hwnd = glfwGetWin32Window(window);
@@ -17,11 +19,15 @@ VkSurfaceKHR RenderTarget::createSurface()
 
 void RenderTarget::destroySurface(VkSurfaceKHR surface)
 {
+	StackLog _(logStack, __FUNCTION__);
+
 	vkDestroySurfaceKHR(instance, surface, nullptr);
 }
 
 VkSwapchainKHR RenderTarget::createSwapChain()
 {
+	StackLog _(logStack, __FUNCTION__);
+
 	swapChainExtent = { 800, 600 };
 	VkSwapchainCreateInfoKHR createInfo = {};
 	createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
@@ -51,11 +57,15 @@ VkSwapchainKHR RenderTarget::createSwapChain()
 
 void RenderTarget::destroySwapChain(VkSwapchainKHR swapChain)
 {
+	StackLog _(logStack, __FUNCTION__);
+
 	vkDestroySwapchainKHR(device, swapChain, nullptr);
 }
 
 void RenderTarget::getSwapChainImages()
 {
+	StackLog _(logStack, __FUNCTION__);
+
 	uint32_t imageCount;
 	vkGetSwapchainImagesKHR(device, swapChain, &imageCount, nullptr);
 	swapChainImages.resize(imageCount);
@@ -64,6 +74,8 @@ void RenderTarget::getSwapChainImages()
 
 VkImageView RenderTarget::createImageView(VkImage image/*, VkFormat format, VkImageAspectFlags aspectFlags*/)
 {
+	StackLog _(logStack, __FUNCTION__);
+
 	VkImageViewCreateInfo createInfo{};
 	createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
 	createInfo.image = image;
@@ -90,7 +102,9 @@ VkImageView RenderTarget::createImageView(VkImage image/*, VkFormat format, VkIm
 }
 void RenderTarget::createFramebuffers()
 {
-	std::cout << "    createFramebuffers()" << std::endl;
+	StackLog _(logStack, __FUNCTION__);
+
+	//std::cout << "    createFramebuffers()" << std::endl;
 	uint32_t imageCount;
 	vkGetSwapchainImagesKHR(device, swapChain, &imageCount, nullptr);
 	framebuffers.resize(imageCount);
@@ -101,6 +115,8 @@ void RenderTarget::createFramebuffers()
 
 VkFramebuffer RenderTarget::createFrameBuffer(VkImageView imageView, VkExtent2D extent, VkRenderPass renderPass)
 {
+	StackLog _(logStack, __FUNCTION__);
+
 	VkFramebufferCreateInfo framebufferInfo{};
 	framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
 	framebufferInfo.renderPass = renderPass;
@@ -121,8 +137,8 @@ VkFramebuffer RenderTarget::createFrameBuffer(VkImageView imageView, VkExtent2D 
 
 // Shader
 
-Shader::Shader(VkDevice device, VkRenderPass renderPass, const char* vertexShaderPath, const char* fragmentShaderPath)
-	: device(device), renderPass{ renderPass }
+Shader::Shader(VkDevice device, VkRenderPass renderPass, const char* vertexShaderPath, const char* fragmentShaderPath, int& logStack)
+	: device(device), renderPass{ renderPass }, logStack{ logStack }
 {
 	//createShaderModule(vertexShaderPath, &vertexShaderModule);
 	//createShaderModule(fragmentShaderPath, &fragmentShaderModule);
@@ -133,6 +149,8 @@ Shader::Shader(VkDevice device, VkRenderPass renderPass, const char* vertexShade
 
 void Shader::createShaderModule(const std::vector<char>& code, VkShaderModule* shaderModule)
 {
+	StackLog _(logStack, __FUNCTION__);
+
 	VkShaderModuleCreateInfo createInfo{};
 	createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
 	createInfo.codeSize = code.size();
@@ -144,7 +162,9 @@ void Shader::createShaderModule(const std::vector<char>& code, VkShaderModule* s
 
 void Shader::createPipelineLayout()
 {
-	std::cout << "    createPipelineLayout()" << std::endl;
+	StackLog _(logStack, __FUNCTION__);
+
+	//std::cout << "    createPipelineLayout()" << std::endl;
 
 	VkPipelineLayoutCreateInfo createInfo{};
 	createInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
@@ -179,6 +199,8 @@ static std::vector<char> ReadFile(const std::string& filename) {
 
 void Shader::createGraphicsPipeline(const std::string vertexShaderPath, const std::string fragmentShaderPath)
 {
+	StackLog _(logStack, __FUNCTION__);
+
 	auto vertexCode = ReadFile(vertexShaderPath);
 	auto fragmentCode = ReadFile(fragmentShaderPath);
 

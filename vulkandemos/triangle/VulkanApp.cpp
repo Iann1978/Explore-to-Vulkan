@@ -29,7 +29,8 @@ void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT
 
 void VulkanApp::enumSupportedValidationLayer()
 {
-	std::cout << "enumSupportedValidationLayer()" << std::endl;
+	StackLog _(logStack, __FUNCTION__);
+
 	uint32_t layerCount = 0;
 	vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
 	std::vector<VkLayerProperties> layers(layerCount);
@@ -44,7 +45,8 @@ void VulkanApp::enumSupportedValidationLayer()
 
 void VulkanApp::run()
 {
-	std::cout << "run()" << std::endl;
+	StackLog _(logStack, __FUNCTION__);
+	//std::cout << "run()" << std::endl;
 	initWindow();
 	initVulkan();
 	mainLoop();
@@ -53,7 +55,8 @@ void VulkanApp::run()
 
 void VulkanApp::initWindow()
 {
-	std::cout << "  initWindow()" << std::endl;
+	StackLog _(logStack, __FUNCTION__);
+
 	glfwInit();
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 	window = glfwCreateWindow(800, 600, "Vulkan", nullptr, nullptr);
@@ -61,14 +64,15 @@ void VulkanApp::initWindow()
 
 void VulkanApp::initVulkan()
 {
-	std::cout << "  initVulkan()" << std::endl;
+	StackLog _(logStack, __FUNCTION__);
+
 	enumSupportedValidationLayer();
 	createInstance();
 	setupDebugMessenger();
 	physicalDevice = pickPhysicalDevice();
 	device = createLogicDevice();
 
-	renderTarget = new RenderTarget(window, instance, device);
+	renderTarget = new RenderTarget(window, instance, device, logStack);
 	renderTarget->surface = renderTarget->createSurface();
 	renderTarget->swapChain = renderTarget->createSwapChain();
 	renderTarget->getSwapChainImages();
@@ -82,7 +86,7 @@ void VulkanApp::initVulkan()
 	graphicQueue = pickGraphicQueue();
 	presentQueue = pickPresentQueue();
 
-	shader = new Shader(device, renderTarget->renderPass, "triangle.vert.spv", "triangle.frag.spv");
+	shader = new Shader(device, renderTarget->renderPass, "triangle.vert.spv", "triangle.frag.spv", logStack);
 
 	createCommandPool();
 	createCommandBuffer();
@@ -95,7 +99,8 @@ void VulkanApp::initVulkan()
 
 void VulkanApp::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex)
 {
-	std::cout << "    recordCommandBuffer()" << std::endl;
+	StackLog _(logStack, __FUNCTION__);
+	//std::cout << "    recordCommandBuffer()" << std::endl;
 
 	VkCommandBufferBeginInfo beginInfo{};
 	beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -131,7 +136,9 @@ void VulkanApp::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imag
 
 VkRenderPass VulkanApp::createRenderPass()
 {
-	std::cout << "createRenderPass()" << std::endl;
+	StackLog _(logStack, __FUNCTION__);
+
+	//std::cout << "createRenderPass()" << std::endl;
 
 	VkAttachmentDescription colorAttachment = {};
 	colorAttachment.format = VK_FORMAT_B8G8R8A8_UNORM;
@@ -170,7 +177,10 @@ VkRenderPass VulkanApp::createRenderPass()
 
 VkQueue VulkanApp::pickGraphicQueue()
 {
-	std::cout << "    pickGraphicQueue()" << std::endl;
+	StackLog _(logStack, __FUNCTION__);
+
+
+	//std::cout << "    pickGraphicQueue()" << std::endl;
 	int queryFamilyIndex = 0;
 	VkQueue graphicsQueue;
 	vkGetDeviceQueue(device, queryFamilyIndex, 0, &graphicsQueue);
@@ -179,7 +189,9 @@ VkQueue VulkanApp::pickGraphicQueue()
 
 VkQueue VulkanApp::pickPresentQueue()
 {
-	std::cout << "    pickPresentQueue()" << std::endl;
+	StackLog _(logStack, __FUNCTION__);
+
+	//std::cout << "    pickPresentQueue()" << std::endl;
 	int queryFamilyIndex = 0;
 	VkQueue presentQueue;
 	vkGetDeviceQueue(device, queryFamilyIndex, 0, &presentQueue);
@@ -188,7 +200,9 @@ VkQueue VulkanApp::pickPresentQueue()
 
 VkDevice VulkanApp::createLogicDevice()
 {
-	std::cout << "createLogicDevice()" << std::endl;
+	StackLog _(logStack, __FUNCTION__);
+
+	//std::cout << "createLogicDevice()" << std::endl;
 
 
 
@@ -220,7 +234,9 @@ VkDevice VulkanApp::createLogicDevice()
 
 VkPhysicalDevice VulkanApp::pickPhysicalDevice()
 {
-	std::cout << "  pickPhysicalDevice()" << std::endl;
+	StackLog _(logStack, __FUNCTION__);
+
+	//std::cout << "  pickPhysicalDevice()" << std::endl;
 	uint32_t deviceCount = 0;
 	vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
 	if (deviceCount == 0)
@@ -235,7 +251,8 @@ VkPhysicalDevice VulkanApp::pickPhysicalDevice()
 
 void VulkanApp::createInstance()
 {
-	std::cout << "    createInstance()" << std::endl;
+	StackLog _(logStack, __FUNCTION__);
+	/*std::cout << "    createInstance()" << std::endl;*/
 	VkApplicationInfo appInfo = {};
 	appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
 	appInfo.pApplicationName = "Hello Triangle";
@@ -267,7 +284,8 @@ void VulkanApp::createInstance()
 
 void VulkanApp::setupDebugMessenger()
 {
-	std::cout << "    setupDebugMessenger()" << std::endl;
+	StackLog _(logStack, __FUNCTION__);
+	//std::cout << "    setupDebugMessenger()" << std::endl;
 
 	if (!enableValidationLayers) return;
 
@@ -286,7 +304,9 @@ void VulkanApp::setupDebugMessenger()
 
 void VulkanApp::createCommandPool()
 {
-	std::cout << "    createCommandPool()" << std::endl;
+	StackLog _(logStack, __FUNCTION__);
+
+	//std::cout << "    createCommandPool()" << std::endl;
 	VkCommandPoolCreateInfo poolInfo{};
 	poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
 	poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
@@ -301,7 +321,9 @@ void VulkanApp::createCommandPool()
 
 void VulkanApp::createCommandBuffer()
 {
-	std::cout << "    createCommandBuffer()" << std::endl;
+	StackLog _(logStack, __FUNCTION__);
+
+	//std::cout << "    createCommandBuffer()" << std::endl;
 	VkCommandBufferAllocateInfo allocInfo{};
 	allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
 	allocInfo.commandPool = commandPool;
@@ -316,7 +338,9 @@ void VulkanApp::createCommandBuffer()
 
 void VulkanApp::createFence()
 {
-	std::cout << "    createFence()" << std::endl;
+	StackLog _(logStack, __FUNCTION__);
+
+	//std::cout << "    createFence()" << std::endl;
 	VkFenceCreateInfo fenceInfo{};
 	fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
 	fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
@@ -330,7 +354,9 @@ void VulkanApp::createFence()
 
 void VulkanApp::mainLoop()
 {
-	std::cout << "  mainLoop()" << std::endl;
+	StackLog _(logStack, __FUNCTION__);
+
+	//std::cout << "  mainLoop()" << std::endl;
 	while (!glfwWindowShouldClose(window))
 	{
 		glfwPollEvents();
@@ -340,7 +366,9 @@ void VulkanApp::mainLoop()
 
 void VulkanApp::drawFrame()
 {
-	std::cout << "  drawFrame()" << std::endl;
+	StackLog _(logStack, __FUNCTION__);
+
+	//std::cout << "  drawFrame()" << std::endl;
 	VkResult result{ VK_SUCCESS };
 	result = vkDeviceWaitIdle(device);
 	if (result != VK_SUCCESS)

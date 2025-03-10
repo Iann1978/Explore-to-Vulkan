@@ -1,1 +1,0 @@
-D:\work\ianngit\Explore-to-Vulkan\vulkandemos\triangle\x64\Debug\triangle.vcxproj.Up2Date

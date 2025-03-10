@@ -2,6 +2,25 @@
 
 #include "include.h"
 
+class StackLog
+{
+public:
+	StackLog(int& logStack, std::string logstr)
+		: logStack(logStack)
+	{
+		for (int i = 0; i < logStack; i++)
+		{
+			std::cout << "  ";
+		}
+		std::cout << logstr << std::endl;
+		logStack++;
+	}
+	~StackLog() {
+		logStack--;
+	}
+	int& logStack;
+};
+
 // should we create windows  in render target?
 class RenderTarget
 {
@@ -20,10 +39,10 @@ public:
 	VkQueue graphicsQueue{ VK_NULL_HANDLE };
 	VkQueue presentQueue{ VK_NULL_HANDLE };
 	VkRenderPass renderPass{ VK_NULL_HANDLE };
-
+	int& logStack;
 public:
-	RenderTarget(GLFWwindow* window, VkInstance instance, VkDevice device)
-		: window(window), instance(instance), device(device) {
+	RenderTarget(GLFWwindow* window, VkInstance instance, VkDevice device, int& logStack)
+		: window(window), instance(instance), device(device), logStack{ logStack } {
 	};
 
 	VkSurfaceKHR createSurface();
@@ -39,7 +58,7 @@ public:
 
 class Shader {
 public:
-	Shader(VkDevice device, VkRenderPass renderPass, const char* vertexShaderPath, const char* fragmentShaderPath);
+	Shader(VkDevice device, VkRenderPass renderPass, const char* vertexShaderPath, const char* fragmentShaderPath, int& logStack);
 	~Shader();
 
 	VkPipeline getPipeline() { return graphicsPipeline; }
@@ -55,6 +74,7 @@ public:
 	VkDescriptorPool descriptorPool;
 	VkDescriptorSet descriptorSet;
 	VkRenderPass renderPass;
+	int& logStack;
 
 	void createShaderModule(const std::vector<char>& code, VkShaderModule* shaderModule);
 	void createPipelineLayout();
