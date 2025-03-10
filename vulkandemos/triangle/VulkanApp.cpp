@@ -87,6 +87,7 @@ void VulkanApp::initVulkan()
 	presentQueue = pickPresentQueue();
 
 	shader = new Shader(device, renderTarget->renderPass, "triangle.vert.spv", "triangle.frag.spv", logStack);
+	material = new Material(this->physicalDevice, this->device,VK_NULL_HANDLE,shader, logStack);
 
 	createCommandPool();
 	createCommandBuffer();
@@ -125,7 +126,9 @@ void VulkanApp::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imag
 
 	vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-	vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, shader->graphicsPipeline);
+	material->Bind(commandBuffer);
+	
+	//vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, shader->graphicsPipeline);
 	vkCmdDraw(commandBuffer, 3, 1, 0, 0);
 	vkCmdEndRenderPass(commandBuffer);
 

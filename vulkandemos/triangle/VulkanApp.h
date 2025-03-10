@@ -57,6 +57,7 @@ public:
 	VkCommandBuffer commandBuffer;
 	RenderTarget *renderTarget = nullptr;
 	Shader* shader = nullptr;
+	Material* material = nullptr;
 	VkFence fence;
 	int logStack = 0;
 

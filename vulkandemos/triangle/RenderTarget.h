@@ -83,3 +83,20 @@ public:
 	//void createDescriptorPool();
 
 };
+
+class Material {
+	Shader* shader;
+	VkDescriptorSet descriptorSet;
+	VkDescriptorPool descriptorPool;
+	VkDevice device;
+	VkPhysicalDevice physicalDevice;
+	int& logStack;
+public:
+	Material(VkPhysicalDevice physicalDevice, VkDevice device, VkDescriptorPool descriptorPool, Shader* shader, int& logStack)
+		: physicalDevice(physicalDevice), device(device), descriptorPool(descriptorPool), shader(shader), logStack{ logStack } {
+
+	}
+
+	void Bind(VkCommandBuffer commandBuffer);
+};
+		

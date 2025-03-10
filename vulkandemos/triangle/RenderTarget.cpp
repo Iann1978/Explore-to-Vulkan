@@ -310,3 +310,10 @@ void Shader::createGraphicsPipeline(const std::string vertexShaderPath, const st
 
 
 }
+
+void Material::Bind(VkCommandBuffer commandBuffer)
+{
+	StackLog _(logStack, __FUNCTION__);
+	//std::cout << "    Bind()" << std::endl;
+	vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, shader->graphicsPipeline);
+}
