@@ -86,20 +86,33 @@ public:
 
 class Material {
 	Shader* shader;
+	VkDescriptorSetLayout descriptorSetLayout;
 	VkDescriptorSet descriptorSet;
 	VkDescriptorPool descriptorPool;
 	VkDevice device;
 	VkPhysicalDevice physicalDevice;
 	int& logStack;
+
+	std::map<std::string, glm::vec3> vec3Values;
+
+	struct Ubo
+	{
+		VkBuffer buffer;
+		VkDeviceMemory memory;
+	} ubo;
 public:
 	Material(VkPhysicalDevice physicalDevice, VkDevice device,  Shader* shader, int& logStack);
+	void SetVec3(std::string name, glm::vec3 value) { vec3Values[name] = value; }
 
 
 	void Bind(VkCommandBuffer commandBuffer);
 
 private:
-	//void createDescriptorSet();
+	void createUbo();
+	void createDescriptorSetLayout();
 	void createDescriptorPool();
-	//void createDescriptorSetLayout();
+	void createDescriptorSet();
+
+
 };
 		

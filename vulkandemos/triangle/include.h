@@ -6,7 +6,10 @@
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <GLFW/glfw3native.h>
 
+#include <glm/glm.hpp>
+
 #include <vector>
+#include <map>
 #include <stdexcept>
 #include <iostream>
 #include <fstream>

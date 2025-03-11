@@ -308,6 +308,9 @@ Material::Material(VkPhysicalDevice physicalDevice, VkDevice device,  Shader* sh
 	StackLog _(logStack, __FUNCTION__);
 
 	createDescriptorPool();
+	createDescriptorSetLayout();
+	createDescriptorSet();
+	createUbo();
 
 }
 
@@ -318,6 +321,34 @@ void Material::Bind(VkCommandBuffer commandBuffer)
 	vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, shader->graphicsPipeline);
 }
 
+void Material::createUbo()
+{
+	StackLog _(logStack, __FUNCTION__);
+	//std::cout << "    createUbo()" << std::endl;
+
+	VkDeviceSize bufferSize = sizeof(glm::vec3);
+
+	VkBufferCreateInfo bufferInfo{};
+	bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+	bufferInfo.size = bufferSize;
+	bufferInfo.usage = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
+	bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+	if (vkCreateBuffer(device, &bufferInfo, nullptr, &ubo.buffer) != VK_SUCCESS)
+	{
+		throw std::runtime_error("Failed to create buffer!");
+	}
+	VkMemoryRequirements memRequirements;
+	vkGetBufferMemoryRequirements(device, ubo.buffer, &memRequirements);
+	VkMemoryAllocateInfo allocInfo{};
+	allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+	allocInfo.allocationSize = memRequirements.size;
+	allocInfo.memoryTypeIndex = 0;
+	if (vkAllocateMemory(device, &allocInfo, nullptr, &ubo.memory) != VK_SUCCESS)
+	{
+		throw std::runtime_error("Failed to allocate buffer memory!");
+	}
+	vkBindBufferMemory(device, ubo.buffer, ubo.memory, 0);
+}
 void Material::createDescriptorPool()
 {
 	StackLog _(logStack, __FUNCTION__);
@@ -338,4 +369,58 @@ void Material::createDescriptorPool()
 	{
 		throw std::runtime_error("Failed to create descriptor pool!");
 	}
+}
+
+void Material::createDescriptorSetLayout()
+{
+	StackLog _(logStack, __FUNCTION__);
+	//std::cout << "    createDescriptorSetLayout()" << std::endl
+
+	VkDescriptorSetLayoutBinding uboLayoutBinding{};
+	uboLayoutBinding.binding = 0;
+	uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+	uboLayoutBinding.descriptorCount = 1;
+	uboLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+
+	VkDescriptorSetLayoutCreateInfo layoutInfo{};
+	layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+	layoutInfo.bindingCount = 1;
+	layoutInfo.pBindings = &uboLayoutBinding;
+
+	VkResult result = vkCreateDescriptorSetLayout(device, &layoutInfo, nullptr, &descriptorSetLayout);
+	if (result != VK_SUCCESS)
+	{
+		throw std::runtime_error("Failed to create descriptor set layout!");
+	}
+
+}
+
+void Material::createDescriptorSet()
+{
+	StackLog _(logStack, __FUNCTION__);
+	//std::cout << "    createDescriptorSet()" << std::endl;
+	VkDescriptorSetLayout layouts[] = { descriptorSetLayout };
+	VkDescriptorSetAllocateInfo allocInfo{};
+	allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+	allocInfo.descriptorPool = descriptorPool;
+	allocInfo.descriptorSetCount = 1;
+	allocInfo.pSetLayouts = layouts;
+	VkResult result = vkAllocateDescriptorSets(device, &allocInfo, &descriptorSet);
+	if (result != VK_SUCCESS)
+	{
+		throw std::runtime_error("Failed to allocate descriptor set!");
+	}
+	//VkDescriptorBufferInfo bufferInfo{};
+	//bufferInfo.buffer = ubo.buffer;
+	//bufferInfo.offset = 0;
+	//bufferInfo.range = sizeof(glm::vec3);
+	//VkWriteDescriptorSet descriptorWrite{};
+	//descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+	//descriptorWrite.dstSet = descriptorSet;
+	//descriptorWrite.dstBinding = 0;
+	//descriptorWrite.dstArrayElement = 0;
+	//descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+	//descriptorWrite.descriptorCount = 1;
+
+
 }
