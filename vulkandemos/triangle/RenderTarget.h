@@ -92,11 +92,14 @@ class Material {
 	VkPhysicalDevice physicalDevice;
 	int& logStack;
 public:
-	Material(VkPhysicalDevice physicalDevice, VkDevice device, VkDescriptorPool descriptorPool, Shader* shader, int& logStack)
-		: physicalDevice(physicalDevice), device(device), descriptorPool(descriptorPool), shader(shader), logStack{ logStack } {
+	Material(VkPhysicalDevice physicalDevice, VkDevice device,  Shader* shader, int& logStack);
 
-	}
 
 	void Bind(VkCommandBuffer commandBuffer);
+
+private:
+	//void createDescriptorSet();
+	void createDescriptorPool();
+	//void createDescriptorSetLayout();
 };
 		

@@ -87,7 +87,7 @@ void VulkanApp::initVulkan()
 	presentQueue = pickPresentQueue();
 
 	shader = new Shader(device, renderTarget->renderPass, "triangle.vert.spv", "triangle.frag.spv", logStack);
-	material = new Material(this->physicalDevice, this->device,VK_NULL_HANDLE,shader, logStack);
+	material = new Material(this->physicalDevice, this->device,shader, logStack);
 
 	createCommandPool();
 	createCommandBuffer();

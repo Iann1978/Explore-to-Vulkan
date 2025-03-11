@@ -301,13 +301,13 @@ void Shader::createGraphicsPipeline(const std::string vertexShaderPath, const st
 	}
 
 
+}
 
+Material::Material(VkPhysicalDevice physicalDevice, VkDevice device,  Shader* shader, int& logStack)
+	: physicalDevice(physicalDevice), device(device),  shader(shader), logStack{ logStack } {
+	StackLog _(logStack, __FUNCTION__);
 
-
-
-
-
-
+	createDescriptorPool();
 
 }
 
@@ -316,4 +316,26 @@ void Material::Bind(VkCommandBuffer commandBuffer)
 	StackLog _(logStack, __FUNCTION__);
 	//std::cout << "    Bind()" << std::endl;
 	vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, shader->graphicsPipeline);
+}
+
+void Material::createDescriptorPool()
+{
+	StackLog _(logStack, __FUNCTION__);
+	//std::cout << "    createDescriptorPool()" << std::endl;
+
+	VkDescriptorPoolSize poolSize{};
+	poolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+	poolSize.descriptorCount = 1;
+
+	VkDescriptorPoolCreateInfo poolInfo{};
+	poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+	poolInfo.poolSizeCount = 1;
+	poolInfo.pPoolSizes = &poolSize;
+	poolInfo.maxSets = 1;
+
+	VkResult result = vkCreateDescriptorPool(device, &poolInfo, nullptr, &descriptorPool);
+	if (result != VK_SUCCESS)
+	{
+		throw std::runtime_error("Failed to create descriptor pool!");
+	}
 }
