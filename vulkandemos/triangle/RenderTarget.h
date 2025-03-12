@@ -41,9 +41,8 @@ public:
 	VkRenderPass renderPass{ VK_NULL_HANDLE };
 	int& logStack;
 public:
-	RenderTarget(GLFWwindow* window, VkInstance instance, VkDevice device, int& logStack)
-		: window(window), instance(instance), device(device), logStack{ logStack } {
-	};
+	RenderTarget(GLFWwindow* window, VkInstance instance, VkDevice device, int& logStack);
+
 
 	VkSurfaceKHR createSurface();
 	void destroySurface(VkSurfaceKHR surface);
@@ -51,8 +50,10 @@ public:
 	void destroySwapChain(VkSwapchainKHR swapChain);
 	void getSwapChainImages();
 	VkImageView createImageView(VkImage image/*, VkFormat format, VkImageAspectFlags aspectFlags*/);
+	void createImageViews();
 	VkFramebuffer createFrameBuffer(VkImageView imageView, VkExtent2D extent, VkRenderPass renderPass);
 	void createFramebuffers();
+	VkRenderPass createRenderPass();
 
 };
 

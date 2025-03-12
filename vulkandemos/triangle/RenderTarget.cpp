@@ -1,5 +1,59 @@
 #include "RenderTarget.h"
 
+RenderTarget::RenderTarget(GLFWwindow* window, VkInstance instance, VkDevice device, int& logStack)
+	: window(window), instance(instance), device(device), logStack{ logStack } {
+	StackLog _(logStack, __FUNCTION__);
+
+	surface = createSurface();
+	swapChain = createSwapChain();
+	getSwapChainImages();
+	createImageViews();
+	renderPass = createRenderPass();
+	createFramebuffers();
+
+};
+
+
+VkRenderPass RenderTarget::createRenderPass()
+{
+	StackLog _(logStack, __FUNCTION__);
+
+	//std::cout << "createRenderPass()" << std::endl;
+
+	VkAttachmentDescription colorAttachment = {};
+	colorAttachment.format = VK_FORMAT_B8G8R8A8_UNORM;
+	colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
+	colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+	colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+	colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+	colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+	colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+	colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+
+	VkAttachmentReference colorAttachmentRef = {};
+	colorAttachmentRef.attachment = 0;
+	colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+
+	VkSubpassDescription subpass{};
+	subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+	subpass.colorAttachmentCount = 1;
+	subpass.pColorAttachments = &colorAttachmentRef;
+
+	VkRenderPassCreateInfo renderPassInfo{};
+	renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+	renderPassInfo.attachmentCount = 1;
+	renderPassInfo.pAttachments = &colorAttachment;
+	renderPassInfo.subpassCount = 1;
+	renderPassInfo.pSubpasses = &subpass;
+
+
+	VkRenderPass renderPass{ VK_NULL_HANDLE };
+	if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass) != VK_SUCCESS) {
+		throw std::runtime_error("failed to create render pass!");
+	}
+	return renderPass;
+
+}
 
 VkSurfaceKHR RenderTarget::createSurface()
 {
@@ -53,6 +107,16 @@ VkSwapchainKHR RenderTarget::createSwapChain()
 		throw std::runtime_error("failed to create swap chain!");
 	}
 	return swapChain;
+}
+
+void RenderTarget::createImageViews()
+{
+	StackLog _(logStack, __FUNCTION__);
+	swapChainImageViews.resize(swapChainImages.size());
+	for (size_t i = 0; i < swapChainImages.size(); i++)
+	{
+		swapChainImageViews[i] = createImageView(swapChainImages[i]);
+	}
 }
 
 void RenderTarget::destroySwapChain(VkSwapchainKHR swapChain)

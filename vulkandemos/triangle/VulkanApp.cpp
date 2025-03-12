@@ -73,15 +73,16 @@ void VulkanApp::initVulkan()
 	device = createLogicDevice();
 
 	renderTarget = new RenderTarget(window, instance, device, logStack);
-	renderTarget->surface = renderTarget->createSurface();
-	renderTarget->swapChain = renderTarget->createSwapChain();
-	renderTarget->getSwapChainImages();
-	for (auto image : renderTarget->swapChainImages)
-	{
-		renderTarget->swapChainImageViews.push_back(renderTarget->createImageView(image));
-	}
-	renderTarget->renderPass = createRenderPass();
-	renderTarget->createFramebuffers();
+	//renderTarget->surface = renderTarget->createSurface();
+	//renderTarget->swapChain = renderTarget->createSwapChain();
+	//renderTarget->getSwapChainImages();
+	//renderTarget->createImageViews();
+	////for (auto image : renderTarget->swapChainImages)
+	////{
+	////	renderTarget->swapChainImageViews.push_back(renderTarget->createImageView(image));
+	////}
+	//renderTarget->renderPass = createRenderPass();
+	//renderTarget->createFramebuffers();
 
 	graphicQueue = pickGraphicQueue();
 	presentQueue = pickPresentQueue();
