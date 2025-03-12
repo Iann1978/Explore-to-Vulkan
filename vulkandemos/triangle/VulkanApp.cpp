@@ -88,6 +88,8 @@ void VulkanApp::initVulkan()
 
 	shader = new Shader(device, renderTarget->renderPass, "triangle.vert.spv", "triangle.frag.spv", logStack);
 	material = new Material(this->physicalDevice, this->device,shader, logStack);
+	material->SetVec3("color", glm::vec3(0, 1, 1));
+	material->updateUbo();
 
 	createCommandPool();
 	createCommandBuffer();

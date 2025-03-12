@@ -78,7 +78,7 @@ public:
 
 	void createShaderModule(const std::vector<char>& code, VkShaderModule* shaderModule);
 	void createPipelineLayout();
-	//void createDescriptorSetLayout();
+	void createDescriptorSetLayout();
 	void createGraphicsPipeline(const std::string vertexShaderPath, const std::string fragmentShaderPath);
 	//void createDescriptorPool();
 
@@ -99,6 +99,7 @@ class Material {
 	{
 		VkBuffer buffer;
 		VkDeviceMemory memory;
+		void* data;
 	} ubo;
 public:
 	Material(VkPhysicalDevice physicalDevice, VkDevice device,  Shader* shader, int& logStack);
@@ -106,9 +107,10 @@ public:
 
 
 	void Bind(VkCommandBuffer commandBuffer);
-
+	void updateUbo();
 private:
 	void createUbo();
+
 	void createDescriptorSetLayout();
 	void createDescriptorPool();
 	void createDescriptorSet();

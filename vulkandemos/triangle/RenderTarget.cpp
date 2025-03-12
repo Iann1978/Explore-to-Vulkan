@@ -142,11 +142,32 @@ Shader::Shader(VkDevice device, VkRenderPass renderPass, const char* vertexShade
 {
 	//createShaderModule(vertexShaderPath, &vertexShaderModule);
 	//createShaderModule(fragmentShaderPath, &fragmentShaderModule);
-	//createDescriptorSetLayout();
+	createDescriptorSetLayout();
 	createPipelineLayout();
 	createGraphicsPipeline(vertexShaderPath, fragmentShaderPath);
 }
+void Shader::createDescriptorSetLayout()
+{
+	StackLog _(logStack, __FUNCTION__);
+	//std::cout << "    createDescriptorSetLayout()" << std::endl
 
+	VkDescriptorSetLayoutBinding uboLayoutBinding{};
+	uboLayoutBinding.binding = 0;
+	uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+	uboLayoutBinding.descriptorCount = 1;
+	uboLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+
+	VkDescriptorSetLayoutCreateInfo layoutInfo{};
+	layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+	layoutInfo.bindingCount = 1;
+	layoutInfo.pBindings = &uboLayoutBinding;
+
+	VkResult result = vkCreateDescriptorSetLayout(device, &layoutInfo, nullptr, &descriptorSetLayout);
+	if (result != VK_SUCCESS)
+	{
+		throw std::runtime_error("Failed to create descriptor set layout!");
+	}
+}
 void Shader::createShaderModule(const std::vector<char>& code, VkShaderModule* shaderModule)
 {
 	StackLog _(logStack, __FUNCTION__);
@@ -168,6 +189,9 @@ void Shader::createPipelineLayout()
 
 	VkPipelineLayoutCreateInfo createInfo{};
 	createInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+	createInfo.setLayoutCount = 1;
+	createInfo.pSetLayouts = &descriptorSetLayout;
+
 	if (vkCreatePipelineLayout(device, &createInfo, nullptr, &pipelineLayout))
 	{
 		throw std::runtime_error("Failed to create pipeline layout!");
@@ -308,7 +332,8 @@ Material::Material(VkPhysicalDevice physicalDevice, VkDevice device,  Shader* sh
 	StackLog _(logStack, __FUNCTION__);
 
 	createDescriptorPool();
-	createDescriptorSetLayout();
+	this->descriptorSetLayout = shader->descriptorSetLayout;
+	//createDescriptorSetLayout();
 	createDescriptorSet();
 	createUbo();
 
@@ -319,7 +344,29 @@ void Material::Bind(VkCommandBuffer commandBuffer)
 	StackLog _(logStack, __FUNCTION__);
 	//std::cout << "    Bind()" << std::endl;
 	vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, shader->graphicsPipeline);
+
+	vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, shader->pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
 }
+
+static uint32_t FindMemoryTypeIndex(VkPhysicalDevice physicalDevice, uint32_t typeFilter, VkMemoryPropertyFlags properties)
+{
+	//StackLog _(logStack, __FUNCTION__);
+
+	VkPhysicalDeviceMemoryProperties memoryProperties;
+	vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memoryProperties);
+
+	for (uint32_t i = 0; i < memoryProperties.memoryTypeCount; i++)
+	{
+		if ((typeFilter & (1 << i)) && memoryProperties.memoryTypes[i].propertyFlags & properties)
+		{
+			return i;
+		}
+	}
+	return -1;
+
+}
+
+
 
 void Material::createUbo()
 {
@@ -342,13 +389,49 @@ void Material::createUbo()
 	VkMemoryAllocateInfo allocInfo{};
 	allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 	allocInfo.allocationSize = memRequirements.size;
-	allocInfo.memoryTypeIndex = 0;
+	allocInfo.memoryTypeIndex = FindMemoryTypeIndex(physicalDevice, memRequirements.memoryTypeBits,
+		VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+
 	if (vkAllocateMemory(device, &allocInfo, nullptr, &ubo.memory) != VK_SUCCESS)
 	{
 		throw std::runtime_error("Failed to allocate buffer memory!");
 	}
 	vkBindBufferMemory(device, ubo.buffer, ubo.memory, 0);
+
+	vkMapMemory(device, ubo.memory, 0, bufferSize, 0, &ubo.data);
+
+
 }
+
+void Material::updateUbo()
+{
+	StackLog _(logStack, __FUNCTION__);
+	//std::cout << "    updateUbo()" << std::endl;
+
+	size_t offset = 0;
+	for (const auto& [name, value] : vec3Values)
+	{
+		memcpy(static_cast<char*>(ubo.data) + offset, &value, sizeof(glm::vec3));
+		offset += sizeof(glm::vec3);
+	}
+
+	VkDescriptorBufferInfo bufferInfo{};
+	bufferInfo.buffer = ubo.buffer;
+	bufferInfo.offset = 0;
+	bufferInfo.range = sizeof(glm::vec3) * vec3Values.size();
+
+	VkWriteDescriptorSet bufferWrite{};
+	bufferWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+	bufferWrite.dstSet = descriptorSet;
+	bufferWrite.dstBinding = 0;
+	bufferWrite.dstArrayElement = 0;
+	bufferWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+	bufferWrite.descriptorCount = 1;
+	bufferWrite.pBufferInfo = &bufferInfo;
+
+	vkUpdateDescriptorSets(device, 1, &bufferWrite, 0, nullptr);
+}
+
 void Material::createDescriptorPool()
 {
 	StackLog _(logStack, __FUNCTION__);
