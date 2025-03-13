@@ -2,9 +2,8 @@
 
 #version 450
 
-layout(binding = 0) uniform UniformBufferObject {
-	vec3 color;
-} ubo;
+#include "MaterialUniformBlock.glsl"
+
 
 layout(location = 0) out vec4 outColor;
 

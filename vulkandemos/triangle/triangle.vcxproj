@@ -142,6 +142,7 @@
     <ClInclude Include="VulkanApp.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="MaterialUniformBlock.glsl" />
     <None Include="triangle.frag" />
     <None Include="triangle.vert" />
   </ItemGroup>
