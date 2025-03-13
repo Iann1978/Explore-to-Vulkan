@@ -58,6 +58,7 @@ public:
 	RenderTarget *renderTarget = nullptr;
 	Shader* shader = nullptr;
 	Material* material = nullptr;
+	Mesh* mesh = nullptr;
 	VkFence fence;
 	int logStack = 0;
 

@@ -208,7 +208,7 @@ Shader::Shader(VkDevice device, VkRenderPass renderPass, const char* vertexShade
 	//createShaderModule(fragmentShaderPath, &fragmentShaderModule);
 	createDescriptorSetLayout();
 	createPipelineLayout();
-	createGraphicsPipeline(vertexShaderPath, fragmentShaderPath);
+	/*createGraphicsPipeline(vertexShaderPath, fragmentShaderPath);*/
 }
 void Shader::createDescriptorSetLayout()
 {
@@ -285,7 +285,7 @@ static std::vector<char> ReadFile(const std::string& filename) {
 
 
 
-void Shader::createGraphicsPipeline(const std::string vertexShaderPath, const std::string fragmentShaderPath)
+void Shader::createGraphicsPipeline(const std::string vertexShaderPath, const std::string fragmentShaderPath, Mesh* mesh)
 {
 	StackLog _(logStack, __FUNCTION__);
 
@@ -309,10 +309,15 @@ void Shader::createGraphicsPipeline(const std::string vertexShaderPath, const st
 
 	VkPipelineShaderStageCreateInfo shaderStages[]{ vertexShaderStageInfo, fragmentShaderStageInfo };
 
+
+	VkVertexInputBindingDescription  bindingDesc = mesh->getVertexBindDestription();
+	VkVertexInputAttributeDescription attributes = mesh->getAttributeDescription();
 	VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
 	vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-	vertexInputInfo.vertexBindingDescriptionCount = 0;
-	vertexInputInfo.vertexAttributeDescriptionCount = 0;
+	vertexInputInfo.vertexBindingDescriptionCount = 1;
+	vertexInputInfo.pVertexBindingDescriptions = &bindingDesc;
+	vertexInputInfo.vertexAttributeDescriptionCount = 1;
+	vertexInputInfo.pVertexAttributeDescriptions = &attributes;
 
 	VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
 	inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
@@ -569,5 +574,69 @@ void Material::createDescriptorSet()
 	//descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 	//descriptorWrite.descriptorCount = 1;
 
+
+}
+
+Mesh::Mesh(VkDevice device, VkPhysicalDevice physicalDevice, VkCommandPool commandPool, VkQueue graphicsQueue, int& logStack)
+	: physicalDevice(physicalDevice), device(device), logStack{ logStack } {
+	StackLog _(logStack, __FUNCTION__);
+}
+
+void Mesh::createVertexBuffer(const std::vector<glm::vec3>& vertices)
+{
+	StackLog _(logStack, __FUNCTION__);
+	//std::cout << "    createVertexBuffer
+
+	VkDeviceSize bufferSize = sizeof(glm::vec3) * vertices.size();
+
+	VkBufferCreateInfo bufferInfo{};
+	bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+	bufferInfo.size = bufferSize;
+	bufferInfo.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+	bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+	if (vkCreateBuffer(device, &bufferInfo, nullptr, &vertexBuffer) != VK_SUCCESS)
+	{
+		throw std::runtime_error("Failed to create buffer!");
+	}
+	VkMemoryRequirements memRequirements;
+	vkGetBufferMemoryRequirements(device, vertexBuffer, &memRequirements);
+	VkMemoryAllocateInfo allocInfo{};
+	allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+	allocInfo.allocationSize = memRequirements.size;
+	allocInfo.memoryTypeIndex = FindMemoryTypeIndex(physicalDevice, memRequirements.memoryTypeBits,
+		VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT );
+
+	if (vkAllocateMemory(device, &allocInfo, nullptr, &vertexBufferMemory) != VK_SUCCESS)
+	{
+		throw std::runtime_error("Failed to allocate buffer memory!");
+	}
+	vkBindBufferMemory(device, vertexBuffer, vertexBufferMemory, 0);
+
+	void* data;
+	vkMapMemory(device, vertexBufferMemory, 0, bufferSize, 0, &data);
+	memcpy(data, vertices.data(), (size_t)bufferSize);
+	vkUnmapMemory(device, vertexBufferMemory);
+}
+
+VkVertexInputBindingDescription  Mesh::getVertexBindDestription()
+{
+	VkVertexInputBindingDescription bindingDescription{};
+	bindingDescription.binding = 0;
+	bindingDescription.stride = sizeof(glm::vec3);
+	bindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+	return bindingDescription;
+}
+VkVertexInputAttributeDescription Mesh::getAttributeDescription()
+{
+	VkVertexInputAttributeDescription attributeDescription{};
+
+	attributeDescription.binding = 0;
+	attributeDescription.location = 0;
+	attributeDescription.format = VK_FORMAT_R32G32B32_SFLOAT;
+	attributeDescription.offset = 0;
+
+
+
+	return attributeDescription;
 
 }

@@ -13,3 +13,4 @@
 #include <stdexcept>
 #include <iostream>
 #include <fstream>
+#include <array>

@@ -86,11 +86,16 @@ void VulkanApp::initVulkan()
 
 	graphicQueue = pickGraphicQueue();
 	presentQueue = pickPresentQueue();
-
+	mesh = new Mesh(device, physicalDevice, commandPool, graphicQueue, logStack);
+	std::vector<glm::vec3> vertices = { glm::vec3(0.0f, -0.5f, 0.0f), glm::vec3(0.5f, 0.5f, 0.0f), glm::vec3(-0.5f, 0.5f, 0.0f) };
+	mesh->createVertexBuffer(vertices);
 	shader = new Shader(device, renderTarget->renderPass, "triangle.vert.spv", "triangle.frag.spv", logStack);
+	shader->createGraphicsPipeline("triangle.vert.spv", "triangle.frag.spv", mesh);
+
 	material = new Material(this->physicalDevice, this->device,shader, logStack);
 	material->SetVec3("color", glm::vec3(0, 1, 1));
 	material->updateUbo();
+
 
 	createCommandPool();
 	createCommandBuffer();
@@ -130,6 +135,10 @@ void VulkanApp::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imag
 	vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
 	material->Bind(commandBuffer);
+
+	VkBuffer vertexBuffers[] = { mesh->getVertexBuffer() };
+	VkDeviceSize offsets[] = { 0 };
+	vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
 	
 	//vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, shader->graphicsPipeline);
 	vkCmdDraw(commandBuffer, 3, 1, 0, 0);

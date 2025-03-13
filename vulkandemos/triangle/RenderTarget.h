@@ -56,7 +56,7 @@ public:
 	VkRenderPass createRenderPass();
 
 };
-
+class Mesh;
 class Shader {
 public:
 	Shader(VkDevice device, VkRenderPass renderPass, const char* vertexShaderPath, const char* fragmentShaderPath, int& logStack);
@@ -80,7 +80,7 @@ public:
 	void createShaderModule(const std::vector<char>& code, VkShaderModule* shaderModule);
 	void createPipelineLayout();
 	void createDescriptorSetLayout();
-	void createGraphicsPipeline(const std::string vertexShaderPath, const std::string fragmentShaderPath);
+	void createGraphicsPipeline(const std::string vertexShaderPath, const std::string fragmentShaderPath, Mesh* mesh);
 	//void createDescriptorPool();
 
 };
@@ -117,5 +117,36 @@ private:
 	void createDescriptorSet();
 
 
+};
+
+class Mesh {
+public:
+	Mesh(VkDevice device, VkPhysicalDevice physicalDevice, VkCommandPool commandPool, VkQueue graphicsQueue, int& logStack);
+	//~Mesh();
+	VkBuffer getVertexBuffer() { return vertexBuffer; }
+	//VkBuffer getIndexBuffer() { return indexBuffer; }
+	uint32_t getIndexCount() { return indexCount; }
+	void createVertexBuffer(const std::vector<glm::vec3>& vertices);
+	
+
+	VkVertexInputBindingDescription  getVertexBindDestription();
+	VkVertexInputAttributeDescription getAttributeDescription();
+	//void createIndexBuffer(const std::vector<uint32_t>& indices);
+	//void createUniformBuffer();
+	//void updateUniformBuffer(glm::mat4 model, glm::mat4 view, glm::mat4 proj);
+	//void Bind(VkCommandBuffer commandBuffer);
+private:
+	VkDevice device;
+	VkPhysicalDevice physicalDevice;
+	VkCommandPool commandPool;
+	VkQueue graphicsQueue;
+	VkBuffer vertexBuffer;
+	VkDeviceMemory vertexBufferMemory;
+	VkBuffer indexBuffer;
+	VkDeviceMemory indexBufferMemory;
+	VkBuffer uniformBuffer;
+	VkDeviceMemory uniformBufferMemory;
+	uint32_t indexCount;
+	int& logStack;
 };
 		
