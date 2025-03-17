@@ -36,3 +36,4 @@ vulkandemos/rgba2yuv420/x64
 vulkandemos/x64
 vulkandemos/encoder/x64
 vulkandemos/triangle/x64
+vulkandemos/ShareBufferBetweenInstance/x64
